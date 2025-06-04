@@ -1,26 +1,7 @@
-# main.py
-
 # 1. Load data and model
 # 2. Take user query input
 # 3. Call recommend_indicators
 # 4. Display results in a readable way
-
-### from model import load_indicator_data, recommend_indicators
-### from utils import format_recommendations
-### from sentence_transformers import SentenceTransformer
-##
-### def main():
-###     # Load indicator data from CSV
-###     # Load pre-trained transformer model
-###     # Prompt user for input
-###     # Call recommendation logic
-###     # Print recommended indicators with scores
-###     pass
-##
-### if __name__ == "__main__":
-###     main()
-
-# main.py
 
 import pandas as pd
 from sentence_transformers import SentenceTransformer

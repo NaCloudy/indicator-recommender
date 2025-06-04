@@ -1,32 +1,13 @@
-# model.py
-
 # 1. Load indicator data
 # 2. Preprocess text fields (e.g., lowercasing, removing punctuation)
 # 3. Use a pre-trained SentenceTransformer to encode both query and indicators
 # 4. Compute cosine similarity between query vector and all indicator vectors
 # 5. Return top-N matched indicators with similarity scores
 
-# model.py
-
 import pandas as pd
 import numpy as np
-#import re
 from sentence_transformers import SentenceTransformer
 from utils import preprocess_text
-
-# def encode_texts(texts: list) -> np.ndarray:
-#     """
-#     临时版本：把每个词的 unicode 编码值取平均，返回一个固定长度的“向量”
-#     （仅用于离线测试流程，不用于生产效果）
-#     """
-#     vecs = []
-#     for text in texts:
-#         codes = [ord(ch) for ch in text]
-#         if len(codes) == 0:
-#             vecs.append(np.zeros(1))
-#         else:
-#             vecs.append(np.array([sum(codes) / len(codes)]))
-#     return np.vstack(vecs)
 
 # def encode_texts(texts: list, model: SentenceTransformer) -> np.ndarray:
 #     """

@@ -1,23 +1,8 @@
-# utils.py
-
 # Utility functions used across the project:
-# - Text cleaning
+# - Loading indicator data
+# - Preprocessing text input
 # - Similarity computation
 # - Display formatting (optional)
-
-### def clean_text(text: str) -> str:
-###     """Basic text cleaning: lowercase, strip, remove symbols."""
-###     pass
-##
-### def compute_cosine_similarity(query_vec, doc_vecs):
-###     """Compute cosine similarity between a query vector and list ##of document vectors."""
-###     pass
-##
-### def format_recommendations(recommendations: list):
-###     """Format the output nicely for printing or logging."""
-###     pass
-
-# utils.py
 
 import re
 import numpy as np
