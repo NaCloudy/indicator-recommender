@@ -1,0 +1,11 @@
+id,indicator_name,definition,dimensions
+1,Daily Active Users,Number of users who logged in and used the platform on a given day,"date,region"
+2,Monthly Conversion Rate,Ratio of users who placed an order to those who visited the site in a month,"date,product"
+3,Average Order Value,Average value of orders placed by users in a given period,"date,product"
+4,Cart Abandonment Rate,Percentage of users who added items to the cart but did not complete the purchase,"date,device"
+5,Customer Retention Rate,Percentage of users who made repeat purchases over a period,"date,customer_segment"
+6,Bounce Rate,Percentage of users who left the site after viewing only one page,"date,traffic_source"
+7,New vs Returning Users,Comparison between first-time and returning visitors,"date,region"
+8,Click-Through Rate (CTR),Ratio of clicks to impressions for marketing campaigns,"date,campaign"
+9,Refund Rate,Percentage of orders that were refunded,"date,product_category"
+10,Inventory Turnover Rate,Rate at which inventory is sold and replaced over a time period,"date,warehouse"
