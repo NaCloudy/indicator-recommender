@@ -1,44 +1,69 @@
-# 1. Load data and model
-# 2. Take user query input
-# 3. Call recommend_indicators
-# 4. Display results in a readable way
-
 import os
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from model import recommend_indicators
-from utils import load_indicator_data, format_recommendations
+from utils import format_recommendations, create_tables, insert_indicators_from_csv, compute_and_store_embeddings, load_embeddings_from_db
 
-# 假设原始指标文件和 embedding 文件的路径
+# Paths for the source CSV and the SQLite database
 INDICATOR_CSV_PATH = "./data/indicators.csv"
-# EMBEDDING_CSV_PATH = "./data/indicator_embedding.csv"
+DB_PATH = "./data/indicators.db"
+MODEL_NAME = "all-MiniLM-L6-v2"
+
+
+def initialize_database(encoder: SentenceTransformer):
+    """
+    Initialize the SQLite database for indicators and embeddings.
+
+    1. If the database file does not exist:
+       - Create the tables
+       - Load indicator records from the CSV
+       - Compute and store embeddings using the provided encoder_model
+
+    2. If the database already exists:
+       - Print a message to indicate that we will skip re-creation
+    """
+    if not os.path.exists(DB_PATH):
+        create_tables(DB_PATH)
+        insert_indicators_from_csv(INDICATOR_CSV_PATH, DB_PATH)
+        compute_and_store_embeddings(DB_PATH, encoder)
+    else:
+        print("Database already exists. Skipping initialization.")
 
 
 def main():
+
+    # 1. Load pre-trained SentenceTransformer model
+    print("Loading BERT model...")
+    os.environ['http_proxy'] = "http://127.0.0.1:7890"
+    os.environ['https_proxy'] = "http://127.0.0.1:7890"
+    encoder_model = SentenceTransformer('sentence-transformers/' + MODEL_NAME)
+
+    # 2. Initialize the database and ensure indicator data is loaded
+    print("Initializing or loading database...")
+    initialize_database(encoder_model)
+
+    # 3. Load the embedding data from the database
+    print("Loading embeddings from database...")
+    indicator_ids, indicator_names, indicator_descriptions, indicator_embeddings, indicator_dimensions = load_embeddings_from_db(DB_PATH)
+
     print("=== E-commerce Indicator Recommender ===")
-    print("Type 'exit' to quit at any time.")
-
-    # 1. Load indicator data from CSV
-    indicators_df = load_indicator_data(INDICATOR_CSV_PATH)
-
-    # 2. Load the pre-trained SentenceTransformer model
-    bert_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    print("Type 'exit' or 'quit' to end the program.")
 
     while True:
-        # 3. Prompt user for input
-        user_query = input("\nEnter your indicator demand (e.g., 'daily active users'): ").strip()
-        if user_query.lower() in ['exit', 'quit']:
-            print("Exiting. Goodbye!")
+        # 4. Prompt the user for an indicator-related query
+        user_query = input("\nEnter your indicator query (e.g., 'daily active users'): ").strip()
+        if user_query.lower() in ["exit", "quit"]:
+            print("Exiting the recommender. Goodbye!")
             break
 
         if not user_query:
             print("Please enter a non-empty query.")
             continue
 
-        # 4. Get Top-5 recommended indicators
-        recommendations = recommend_indicators(user_query, indicators_df, bert_model, top_n=5)
+        # 5. Get Top-5 recommended indicators
+        recommendations = recommend_indicators(user_query, indicator_ids, indicator_names, indicator_descriptions, indicator_embeddings, indicator_dimensions, encoder_model, top_n=5)
 
-        # 5. Format and display the results
+        # 6. Format and display the results
         print("\nRecommended Indicators:")
         print(format_recommendations(recommendations))
 

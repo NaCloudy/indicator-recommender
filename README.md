@@ -1,101 +1,116 @@
-# indicator-recommender
+# Indicator Recommender
 
-## 项目简介
+## Project Overview
 
-这是一个电商指标推荐系统项目，基于用户输入自动推荐相关指标，方便数据分析和决策支持。
+**Indicator Recommender** is a lightweight system designed to automatically suggest relevant business indicators based on user input. It aims to support business intelligence (BI) data management by improving indicator discoverability and reusability.
 
-## 功能
+## Features
 
-- 读取指标数据文件（CSV 格式）
-- 使用预训练模型计算文本嵌入
-- 根据输入推荐相关指标
-- 支持简单的交互式命令行操作
+- Load and store indicator metadata into a local SQLite database (using e-commerce metrics as examples)
+- Compute and store text embeddings using a pretrained model to avoid redundant computation
+- Recommend semantically similar indicators based on user input, along with similarity scores
+- Support basic interactive command-line interface (CLI) for quick testing
 
-## 配置
+## Requirements
 
-使用`Python 3.9.7`.
+- Python 3.9.7
+- `pandas==1.3.4`
+- `numpy==1.20.3`
+- `sentence-transformers==4.1.0`
 
-1. 克隆项目代码：
+## Getting Started
+
+1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/xxx/indicator-recommender.git
+git clone https://github.com/NaCloudy/indicator-recommender.git
 cd indicator-recommender
 ```
 
-2. 创建并激活 Python 虚拟环境
+2. **Create and activate a Python virtual environment:**
 
-```python
+```bash
 python -m venv venv
-# Windows
+# On Windows:
 .\venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 ```
 
-3. 安装依赖
+3. **Install dependencies:**
 
-```py
+```bash
 pip install -r requirements.txt
 ```
 
-4. 运行
+4. **Run the app:**
 
-```python
-$env:HTTP_PROXY = "http://xx.xx.xx.xx:xxxx" # 配置代理，确保hugging face模型可下载
-$env:HTTPS_PROXY = "http://xx.xx.xx.xx:xxxx"
-python app\main.py
+```bash
+python app/main.py
 ```
 
-## 示例演示
+## Example Usage
 
-```python
+```text
+Loading BERT model...
+Loading database...
+DB already exists, checking embeddings...
+Loading embeddings from database...
 === E-commerce Indicator Recommender ===
 Type 'exit' to quit at any time.
 
 Enter your indicator demand (e.g., 'daily active users'):
 ```
 
-> 输入：`number of users that active each day`
+> Input: `number of users active every day`
 
-```python
+```text
 Recommended Indicators:
 1. Daily Active Users
-   Definition: Number of users who logged in and used the platform on a given day
+   Description: Number of users who logged in and used the platform on a given day
    Dimensions: date,region
-   Similarity Score: 0.844
+   Similarity Score: 0.815
 
 2. Monthly Conversion Rate
-   Definition: Ratio of users who placed an order to those who visited the site in a month
+   Description: Ratio of users who placed an order to those who visited the site in a month
    Dimensions: date,product
-   Similarity Score: 0.371
+   Similarity Score: 0.364
 
 3. Customer Retention Rate
-   Definition: Percentage of users who made repeat purchases over a period
+   Description: Percentage of users who made repeat purchases over a period
    Dimensions: date,customer_segment
-   Similarity Score: 0.333
+   Similarity Score: 0.359
 
 4. Bounce Rate
-   Definition: Percentage of users who left the site after viewing only one page
+   Description: Percentage of users who left the site after viewing only one page
    Dimensions: date,traffic_source
-   Similarity Score: 0.270
+   Similarity Score: 0.298
 
 5. Average Order Value
-   Definition: Average value of orders placed by users in a given period
+   Description: Average value of orders placed by users in a given period
    Dimensions: date,product
    Similarity Score: 0.259
 
-Enter your indicator demand (e.g., 'daily active users'): exit
-Exiting. Goodbye!
+Enter your indicator demand (e.g., 'daily active users'):
 ```
 
-## 技术栈说明
+> Input: `exit`
 
-- 文本嵌入：sentence-transformers/all-MiniLM-L6-v2
-- 相似度计算：dot product（正则化 embeddings 后，余弦相似度可以直接 dot prod）
+```text
+Exiting the recommender. Goodbye!
+```
 
-## TODO 列表
+## Tech Stack
 
-- 增加下游大模型，根据 top3 结果完成进一步筛选推荐（计划使用 gemini）
-- 增加命中结果记录，便于后续离线重训练（对于 bert 模型）
-- 部署到网页端（便于用户使用）
-- 将指标数据部署到数据库中（目前以 csv 形式存储）
-- 预计算指标 embedding 并仅调用 embedding 文件，避免重复计算（？）
-- 增加数据量（目前 indicators.csv 只有 10 条数据，计划增加到 1k+）
+- **Text Embedding Model:** `sentence-transformers/all-MiniLM-L6-v2`
+- **Similarity Metric:** Dot product (equivalent to cosine similarity after normalization)
+- **Database:** SQLite (stores indicators and their embeddings)
+
+## TODO
+
+- ✅ Store indicator data in a SQLite database
+- ✅ Precompute and store embeddings to avoid recomputation
+- ⬜ Track user selections to enable offline model retraining (e.g., fine-tune BERT)
+- ⬜ Expand the indicator dataset (currently only 10 examples)
+- ⬜ Integrate with a large language model (e.g., Gemini) to refine top-3 results
+- ⬜ Deploy as a web application for broader accessibility

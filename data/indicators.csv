@@ -1,4 +1,4 @@
-id,indicator_name,definition,dimensions
+id,name,description,dimensions
 1,Daily Active Users,Number of users who logged in and used the platform on a given day,"date,region"
 2,Monthly Conversion Rate,Ratio of users who placed an order to those who visited the site in a month,"date,product"
 3,Average Order Value,Average value of orders placed by users in a given period,"date,product"
