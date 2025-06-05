@@ -100,10 +100,7 @@ def format_recommendations(recommendations: list) -> str:
         description = rec.get('description', 'N/A')
         dimensions = rec.get('dimensions', 'N/A')
         similarity = rec.get('similarity', 0.0)
-        lines.append(f"{idx}. {name}\n"
-                     f"   Description: {description}\n"
-                     f"   Dimensions: {dimensions}\n"
-                     f"   Similarity Score: {similarity:.3f}")
+        lines.append(f"{idx}. {name}\n" f"   Description: {description}\n" f"   Dimensions: {dimensions}\n" f"   Similarity Score: {similarity:.3f}")
     return "\n\n".join(lines)
 
 
@@ -123,9 +120,10 @@ def create_connection(db_path: str) -> sqlite3.Connection:
 
 def create_tables(db_path: str):
     """
-    Create two tables in the SQLite database if they do not already exist:
+    Create three tables in the SQLite database if they do not already exist:
       1. ind (id, name, description, dimension)
       2. emb (indicator_id, embedding_blob)
+      3. user_feedback (id, query, recommended_indicator_id, feedback_score, timestamp)
     
     Args:
         db_path (str): Path to the SQLite database file.
@@ -147,6 +145,17 @@ def create_tables(db_path: str):
             indicator_id INTEGER NOT NULL,
             embedding_blob BLOB NOT NULL,
             FOREIGN KEY(indicator_id) REFERENCES ind(id)
+        )
+    ''')
+    # Table for user feedback
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS user_feedback (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            query TEXT NOT NULL,
+            recommended_indicator_id INTEGER NOT NULL,
+            feedback_score INTEGER NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(recommended_indicator_id) REFERENCES ind(id)
         )
     ''')
     conn.commit()
@@ -256,3 +265,22 @@ def load_embeddings_from_db(db_path: str) -> tuple:
     conn.close()
     embeddings_array = np.array(embeddings)
     return ids, names, descriptions, embeddings_array, dimensions
+
+
+def store_user_feedback(db_path: str, query: str, indicator_id: int, feedback_score: int):
+    """
+    Store user feedback for a recommendation in the database.
+    
+    Args:
+        db_path (str): Path to the SQLite database file.
+        query (str): The original user query.
+        indicator_id (int): ID of the recommended indicator.
+        feedback_score (int): User's feedback score (1-5).
+    """
+    conn = create_connection(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("INSERT INTO user_feedback (query, recommended_indicator_id, feedback_score) VALUES (?, ?, ?)", (query, indicator_id, feedback_score))
+
+    conn.commit()
+    conn.close()

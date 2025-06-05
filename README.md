@@ -9,6 +9,7 @@
 - Load and store indicator metadata into a local SQLite database (using e-commerce metrics as examples)
 - Compute and store text embeddings using a pretrained model to avoid redundant computation
 - Recommend semantically similar indicators based on user input, along with similarity scores
+- Collect and store user feedback on recommendations for future model improvement
 - Support basic interactive command-line interface (CLI) for quick testing
 
 ## Requirements
@@ -91,26 +92,49 @@ Recommended Indicators:
    Dimensions: date,product
    Similarity Score: 0.259
 
-Enter your indicator demand (e.g., 'daily active users'):
+Please rate how relevant each recommendation is (1-5, where 5 is most relevant):
+
+Rate 'Daily Active Users' (1-5):
 ```
 
-> Input: `exit`
+> Input: `5`
 
-```text
-Exiting the recommender. Goodbye!
+```
+Rate 'Monthly Conversion Rate' (1-5):
+```
+
+> Input: `1`
+
+(and the rest 3 are rated...)
+
+```
+Thank you for your feedback! It will help improve future recommendations.
 ```
 
 ## Tech Stack
 
 - **Text Embedding Model:** `sentence-transformers/all-MiniLM-L6-v2`
 - **Similarity Metric:** Dot product (equivalent to cosine similarity after normalization)
-- **Database:** SQLite (stores indicators and their embeddings)
+- **Database:** SQLite (stores indicators, embeddings, and user feedback)
+
+## Data Collection and Model Improvement
+
+The system collects user feedback through a 5-point rating system:
+
+- Users rate each recommended indicator based on relevance
+- Feedback is stored in the database with timestamps
+- Collected data can be used for:
+  - Fine-tuning the BERT model
+  - Analyzing recommendation quality
+  - Understanding user needs and preferences
+  - Improving future recommendations
 
 ## TODO
 
 - ✅ Store indicator data in a SQLite database
 - ✅ Precompute and store embeddings to avoid recomputation
-- ⬜ Track user selections to enable offline model retraining (e.g., fine-tune BERT)
+- ✅ Track user feedback for recommendations
+- ⬜ Use collected feedback to fine-tune the BERT model
 - ⬜ Expand the indicator dataset (currently only 10 examples)
 - ⬜ Integrate with a large language model (e.g., Gemini) to refine top-3 results
 - ⬜ Deploy as a web application for broader accessibility

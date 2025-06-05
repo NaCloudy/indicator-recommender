@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from model import recommend_indicators
-from utils import format_recommendations, create_tables, insert_indicators_from_csv, compute_and_store_embeddings, load_embeddings_from_db
+from utils import format_recommendations, create_tables, insert_indicators_from_csv, compute_and_store_embeddings, load_embeddings_from_db, store_user_feedback
 
 # Paths for the source CSV and the SQLite database
 INDICATOR_CSV_PATH = "./data/indicators.csv"
@@ -30,8 +30,33 @@ def initialize_database(encoder: SentenceTransformer):
         print("Database already exists. Skipping initialization.")
 
 
-def main():
+def get_user_feedback(recommendations: list) -> dict:
+    """
+    Collect user feedback for the recommended indicators.
+    
+    Args:
+        recommendations (list): List of recommendation dictionaries.
+    
+    Returns:
+        dict: Dictionary mapping indicator IDs to feedback scores.
+    """
+    feedback = {}
+    print("\nPlease rate how relevant each recommendation is (1-5, where 5 is most relevant):")
+    for rec in recommendations:
+        while True:
+            try:
+                score = int(input(f"\nRate '{rec['name']}' (1-5): "))
+                if 1 <= score <= 5:
+                    feedback[rec['id']] = score
+                    break
+                else:
+                    print("Please enter a number between 1 and 5.")
+            except ValueError:
+                print("Please enter a valid number.")
+    return feedback
 
+
+def main():
     # 1. Load pre-trained SentenceTransformer model
     print("Loading BERT model...")
     os.environ['http_proxy'] = "http://127.0.0.1:7890"
@@ -66,6 +91,12 @@ def main():
         # 6. Format and display the results
         print("\nRecommended Indicators:")
         print(format_recommendations(recommendations))
+
+        # 7. Collect and store user feedback
+        feedback = get_user_feedback(recommendations)
+        for indicator_id, score in feedback.items():
+            store_user_feedback(DB_PATH, user_query, indicator_id, score)
+        print("\nThank you for your feedback! It will help improve future recommendations.")
 
 
 if __name__ == "__main__":
