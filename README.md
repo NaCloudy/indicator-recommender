@@ -138,3 +138,16 @@ The system collects user feedback through a 5-point rating system:
 - ⬜ Expand the indicator dataset (currently only 10 examples)
 - ⬜ Integrate with a large language model (e.g., Gemini) to refine top-3 results
 - ⬜ Deploy as a web application for broader accessibility
+
+## Development Progress
+
+```mermaid
+timeline
+    title Project Progress
+    Idea: 25-06-03 : Get the idea and plan
+    Version 0.0: version 0.0.0 25-06-04: Minimum viable product, using csv and re-calculate in each query 
+    : version 0.0.1 25-06-04: Encapsulation of embedding and similarity calculation
+    version 0.1 : version 0.1.0 25-06-05: Using database to store data
+    : version 0.1.1 25-06-05: Adding "feedback" and "hit record" feature
+```
+
