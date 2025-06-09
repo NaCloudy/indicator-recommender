@@ -12,6 +12,24 @@
 - Collect and store user feedback on recommendations for future model improvement
 - Support basic interactive command-line interface (CLI) for quick testing
 
+## Tech Stack
+
+- **Text Embedding Model:** [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- **Similarity Metric:** Dot product (equivalent to cosine similarity after normalization)
+- **Database:** SQLite (stores indicators, embeddings, and user feedback)
+
+## Data Collection and Model Improvement
+
+The system collects user feedback through a 5-point rating system:
+
+- Users rate each recommended indicator based on relevance
+- Feedback is stored in the database with timestamps
+- Collected data can be used for:
+  - Fine-tuning the embedding model
+  - Analyzing recommendation quality
+  - Understanding user needs and preferences
+  - Improving future recommendations
+
 ## Requirements
 
 - Python 3.9.7
@@ -53,7 +71,7 @@ python app/main.py
 ## Example Usage
 
 ```text
-Loading BERT model...
+Loading embedding model...
 Loading database...
 DB already exists, checking embeddings...
 Loading embeddings from database...
@@ -111,30 +129,12 @@ Rate 'Monthly Conversion Rate' (1-5):
 Thank you for your feedback! It will help improve future recommendations.
 ```
 
-## Tech Stack
-
-- **Text Embedding Model:** `sentence-transformers/all-MiniLM-L6-v2`
-- **Similarity Metric:** Dot product (equivalent to cosine similarity after normalization)
-- **Database:** SQLite (stores indicators, embeddings, and user feedback)
-
-## Data Collection and Model Improvement
-
-The system collects user feedback through a 5-point rating system:
-
-- Users rate each recommended indicator based on relevance
-- Feedback is stored in the database with timestamps
-- Collected data can be used for:
-  - Fine-tuning the BERT model
-  - Analyzing recommendation quality
-  - Understanding user needs and preferences
-  - Improving future recommendations
-
 ## TODO
 
 - ✅ Store indicator data in a SQLite database
 - ✅ Precompute and store embeddings to avoid recomputation
 - ✅ Track user feedback for recommendations
-- ⬜ Use collected feedback to fine-tune the BERT model
+- ⬜ Use collected feedback to fine-tune the embedding model
 - ⬜ Expand the indicator dataset (currently only 10 examples)
 - ⬜ Integrate with a large language model (e.g., Gemini) to refine top-3 results
 - ⬜ Deploy as a web application for broader accessibility
@@ -145,9 +145,8 @@ The system collects user feedback through a 5-point rating system:
 timeline
     title Project Progress
     Idea: 25-06-03 : Get the idea and plan
-    Version 0.0: version 0.0.0 25-06-04: Minimum viable product, using csv and re-calculate in each query 
+    Version 0.0: version 0.0.0 25-06-04: Minimum viable product, using csv and re-calculate in each query
     : version 0.0.1 25-06-04: Encapsulation of embedding and similarity calculation
     version 0.1 : version 0.1.0 25-06-05: Using database to store data
     : version 0.1.1 25-06-05: Adding "feedback" and "hit record" feature
 ```
-

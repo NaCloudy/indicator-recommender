@@ -58,7 +58,7 @@ def get_user_feedback(recommendations: list) -> dict:
 
 def main():
     # 1. Load pre-trained SentenceTransformer model
-    print("Loading BERT model...")
+    print("Loading embedding model...")
     os.environ['http_proxy'] = "http://127.0.0.1:7890"
     os.environ['https_proxy'] = "http://127.0.0.1:7890"
     encoder_model = SentenceTransformer('sentence-transformers/' + MODEL_NAME)
